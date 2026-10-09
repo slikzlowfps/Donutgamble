@@ -1,0 +1,540 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gold Rush | DonutSMP Arcade</title>
+<style>
+:root {
+  --gold:#ffc928;
+  --gold2:#ffdf72;
+  --bg:#090a0c;
+  --panel:#111317;
+  --panel2:#171a20;
+  --text:#f6f5ef;
+  --muted:#8e929c;
+  --border:#292b30;
+  --green:#46df9a;
+  --red:#ff5c66;
+}
+*{box-sizing:border-box}
+body{
+  margin:0;background:var(--bg);color:var(--text);
+  font-family:Inter,system-ui,-apple-system,sans-serif;
+}
+button,input{font:inherit}
+button{cursor:pointer}
+button:disabled{opacity:.45;cursor:not-allowed}
+button:focus-visible,input:focus-visible{
+  outline:2px solid var(--gold);outline-offset:3px
+}
+header{
+  height:74px;display:flex;align-items:center;justify-content:space-between;
+  padding:0 5%;border-bottom:1px solid var(--border);
+  background:#0d0e11;position:sticky;top:0;z-index:5;gap:16px
+}
+.brand{display:flex;align-items:center;gap:12px;font-weight:900;font-size:19px}
+.logo{
+  width:39px;height:39px;border-radius:12px;display:grid;place-items:center;
+  background:linear-gradient(135deg,#ffe99a,#c58b00);
+  color:#171006;font-size:24px;box-shadow:0 0 22px #ffc92825
+}
+.brand span{color:var(--gold)}
+nav{display:flex;gap:8px}
+.navbtn{
+  color:var(--muted);border:0;background:transparent;
+  padding:10px 13px;border-radius:9px;font-size:13px
+}
+.navbtn.active,.navbtn:hover{color:var(--gold);background:#ffc92812}
+.balance{
+  padding:10px 14px;border:1px solid #57451b;background:#19150a;
+  border-radius:10px;font-weight:800;color:var(--gold);font-size:13px;
+  white-space:nowrap
+}
+main{max-width:1240px;margin:auto;padding:30px 22px 70px}
+.hero{
+  min-height:260px;border:1px solid #493a18;border-radius:18px;
+  background:radial-gradient(ellipse at 85% 30%,#8c641d45,transparent 38%),
+  linear-gradient(110deg,#19160e,#111216 65%);
+  padding:38px;display:flex;justify-content:space-between;align-items:center;
+  gap:25px;overflow:hidden;position:relative
+}
+.eyebrow{color:var(--gold);font-size:11px;font-weight:900;letter-spacing:2px}
+h1{font-size:clamp(30px,5vw,48px);letter-spacing:-1.8px;margin:12px 0}
+h1 em{font-style:normal;color:var(--gold)}
+.hero p{color:var(--muted);line-height:1.7;max-width:500px;font-size:14px}
+.hero-art{font-size:clamp(75px,11vw,135px);filter:drop-shadow(0 0 30px #ffc92835);padding:0 24px}
+.btn{
+  border:0;border-radius:9px;padding:12px 17px;font-weight:850;
+  font-size:13px;transition:.15s
+}
+.btn:hover{transform:translateY(-1px)}
+.btn-gold{background:linear-gradient(135deg,var(--gold2),#e8a900);color:#171006}
+.btn-dark{background:#202127;border:1px solid #34363d;color:white}
+.btn-red{background:#3b171a;color:#ff9da3;border:1px solid #6b292e}
+.section-head{
+  display:flex;align-items:center;justify-content:space-between;
+  gap:12px;margin:31px 0 15px
+}
+.section-head h2{font-size:18px;margin:0}
+.muted{color:var(--muted);font-size:12px}
+.layout{display:grid;grid-template-columns:minmax(0,1fr) 280px;gap:18px}
+.games{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.game-card{
+  background:var(--panel);border:1px solid var(--border);
+  border-radius:15px;padding:20px;transition:.2s;min-width:0
+}
+.game-card:hover{border-color:#81631f;transform:translateY(-2px)}
+.card-top{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.game-icon{
+  width:49px;height:49px;display:grid;place-items:center;border-radius:13px;
+  background:#ffc92813;font-size:27px
+}
+.tag{
+  color:var(--gold);background:#ffc92812;border:1px solid #6d541c;
+  padding:5px 8px;border-radius:6px;font-size:9px;font-weight:900;
+  letter-spacing:1px
+}
+.game-card h3{margin:17px 0 6px;font-size:17px}
+.game-card p{color:var(--muted);font-size:12px;line-height:1.6;min-height:38px}
+.card-bottom{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:15px}
+.side-panel,.play-panel{
+  background:var(--panel);border:1px solid var(--border);border-radius:15px;padding:20px
+}
+.side-panel h3,.play-panel h2{margin:0 0 17px;font-size:16px}
+.stat{
+  padding:13px 0;border-bottom:1px solid var(--border);
+  display:flex;justify-content:space-between;gap:10px;font-size:12px
+}
+.stat:last-child{border:0}
+.stat span{color:var(--muted)}
+.gold{color:var(--gold)}
+.play-panel{margin-top:24px;scroll-margin-top:90px}
+.play-header{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.play-header h2{margin:0}
+.game-area{
+  background:#0c0d10;border:1px solid var(--border);border-radius:12px;
+  margin-top:17px;padding:22px;min-height:270px
+}
+.game-desc{font-size:12px;color:var(--muted);line-height:1.6}
+.controls{display:flex;flex-wrap:wrap;gap:9px;align-items:center;margin-top:17px}
+.field{display:flex;flex-direction:column;gap:7px;min-width:130px;flex:1}
+.field label{font-size:11px;color:var(--muted)}
+input{
+  width:100%;padding:11px;background:#17191e;color:white;
+  border:1px solid #34363d;border-radius:8px;min-width:0
+}
+.game-result{
+  min-height:30px;margin-top:17px;color:var(--muted);
+  font-size:13px;line-height:1.6
+}
+.big-result{text-align:center;padding:25px 0;font-size:42px;font-weight:900;color:var(--gold)}
+.coin{
+  width:100px;height:100px;border-radius:50%;margin:15px auto;
+  display:grid;place-items:center;font-size:44px;
+  border:5px solid #bd8b12;
+  background:radial-gradient(circle at 35% 25%,#fff0a3,#e0a514 58%,#815100);
+  color:#2b1b00;box-shadow:0 0 32px #ffc9281c
+}
+.mine-grid{
+  display:grid;grid-template-columns:repeat(5,minmax(0,1fr));
+  gap:7px;max-width:360px;margin:18px auto
+}
+.mine-cell{
+  aspect-ratio:1;border:1px solid #34363d;border-radius:7px;
+  background:#1a1d23;color:var(--gold);font-size:20px;font-weight:900
+}
+.mine-cell:hover:not(:disabled){background:#292c32;border-color:var(--gold)}
+.mine-cell.safe{background:#14352a;border-color:#287c5a}
+.mine-cell.bomb{background:#401b20;border-color:#a83a44}
+.history{margin-top:25px}
+.history table{width:100%;border-collapse:collapse;font-size:12px}
+th,td{text-align:left;padding:12px 8px;border-bottom:1px solid var(--border)}
+th{color:var(--muted);font-weight:600}
+.empty{text-align:center;color:var(--muted);padding:24px}
+footer{text-align:center;padding:30px;color:#656873;font-size:11px}
+.hidden{display:none!important}
+.notice{font-size:11px;color:var(--muted);margin-top:12px;line-height:1.6}
+.toast{
+  position:fixed;bottom:20px;left:50%;transform:translateX(-50%);
+  padding:12px 18px;background:#23252a;border:1px solid #45464c;
+  border-radius:9px;font-size:13px;z-index:20;max-width:90vw
+}
+@media(max-width:850px){
+  header{padding:0 16px;flex-wrap:wrap;height:auto;min-height:68px;padding-top:12px;padding-bottom:12px}
+  nav{order:3;width:100%;overflow:auto}
+  .layout{grid-template-columns:1fr}
+  .side-panel{order:2}
+  .hero{padding:25px}
+  .hero-art{padding:0}
+}
+@media(max-width:520px){
+  main{padding:18px 13px 45px}
+  .games{grid-template-columns:1fr}
+  .hero-art{display:none}
+  .hero{min-height:230px}
+  .game-area{padding:14px}
+  .balance{font-size:11px;padding:9px}
+  .navbtn{padding:9px}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="brand"><div class="logo">✦</div> GOLD <span>RUSH</span></div>
+  <nav>
+    <button class="navbtn active" data-page="arcade">Arcade</button>
+    <button class="navbtn" data-page="games">Games</button>
+    <button class="navbtn" data-page="leaderboard">Leaderboard</button>
+  </nav>
+  <div class="balance">✦ <span id="balance">10,000</span> PRACTICE</div>
+</header>
+
+<main>
+  <section class="hero" id="hero">
+    <div>
+      <div class="eyebrow">THE BLOCKY ARCADE</div>
+      <h1>PLAY BIG<br><em>GO FOR GOLD</em></h1>
+      <p>Your next high score starts here. Play mini-games, collect practice points and climb the leaderboard.</p>
+      <button class="btn btn-gold" onclick="openGame('coin')">EXPLORE GAMES ↗</button>
+      <button class="btn btn-dark" onclick="dailyReward()">DAILY BONUS</button>
+    </div>
+    <div class="hero-art">🪙</div>
+  </section>
+
+  <div class="section-head" id="gamesHeading">
+    <h2>✦ Featured Games</h2>
+    <span class="muted">4 ARCADE GAMES</span>
+  </div>
+
+  <div class="layout">
+    <div class="games" id="gameCards">
+      <article class="game-card">
+        <div class="card-top"><div class="game-icon">🪙</div><span class="tag">PRACTICE</span></div>
+        <h3>Coin Flip</h3><p>Pick heads or tails and see which side lands.</p>
+        <div class="card-bottom"><span class="muted">Quick game</span><button class="btn btn-gold" onclick="openGame('coin')">Play ↗</button></div>
+      </article>
+      <article class="game-card">
+        <div class="card-top"><div class="game-icon">💎</div><span class="tag">PRACTICE</span></div>
+        <h3>Mines</h3><p>Explore a grid and find gems without hitting a mine.</p>
+        <div class="card-bottom"><span class="muted">25 tiles</span><button class="btn btn-gold" onclick="openGame('mines')">Play ↗</button></div>
+      </article>
+      <article class="game-card">
+        <div class="card-top"><div class="game-icon">🎲</div><span class="tag">PRACTICE</span></div>
+        <h3>Dice Roll</h3><p>Roll the dice and try to beat your personal high score.</p>
+        <div class="card-bottom"><span class="muted">1 to 6</span><button class="btn btn-gold" onclick="openGame('dice')">Play ↗</button></div>
+      </article>
+      <article class="game-card">
+        <div class="card-top"><div class="game-icon">🚀</div><span class="tag">PRACTICE</span></div>
+        <h3>Crash Runner</h3><p>Watch the multiplier climb and practice your timing.</p>
+        <div class="card-bottom"><span class="muted">Timing game</span><button class="btn btn-gold" onclick="openGame('crash')">Play ↗</button></div>
+      </article>
+    </div>
+
+    <aside class="side-panel" id="sidePanel">
+      <h3>✦ Your Stats</h3>
+      <div class="stat"><span>Practice points</span><strong class="gold" id="sideBalance">10,000</strong></div>
+      <div class="stat"><span>Games played</span><strong id="played">0</strong></div>
+      <div class="stat"><span>Gems found</span><strong id="gems">0</strong></div>
+      <div class="stat"><span>Daily bonus</span><strong class="gold" id="bonusStatus">Ready</strong></div>
+      <p class="notice">Practice points have no cash value. This demo does not accept deposits or offer withdrawals.</p>
+    </aside>
+  </div>
+
+  <section class="play-panel" id="playPanel">
+    <div class="play-header">
+      <h2 id="gameTitle">🪙 Coin Flip</h2>
+      <button class="btn btn-dark" onclick="resetGame()">Reset game</button>
+    </div>
+    <div class="game-area" id="gameArea"></div>
+    <div class="game-result" id="result" aria-live="polite">Choose a game to start playing.</div>
+  </section>
+
+  <section class="history" id="history">
+    <div class="section-head"><h2>Recent Activity</h2><button class="btn btn-dark" onclick="clearHistory()">Clear</button></div>
+    <table>
+      <thead><tr><th>GAME</th><th>RESULT</th><th>POINTS</th></tr></thead>
+      <tbody id="historyRows"><tr><td colspan="3" class="empty">Your game history will show here</td></tr></tbody>
+    </table>
+  </section>
+
+  <section class="play-panel hidden" id="leaderboard">
+    <h2>🏆 Practice Leaderboard</h2>
+    <p class="game-desc">Example players for the demo. These are not live DonutSMP player stats.</p>
+    <div class="stat"><span>🥇 GoldMiner</span><strong class="gold">98,400</strong></div>
+    <div class="stat"><span>🥈 BlockWizard</span><strong>82,150</strong></div>
+    <div class="stat"><span>🥉 PixelKnight</span><strong>65,700</strong></div>
+    <div class="stat"><span>4. OreHunter</span><strong>42,300</strong></div>
+    <div class="stat"><span>5. DiamondDude</span><strong>31,200</strong></div>
+  </section>
+</main>
+<footer>GOLD RUSH ARCADE · FAN-MADE DEMO · NOT AFFILIATED WITH DONUTSMP</footer>
+
+<script>
+const $ = id => document.getElementById(id);
+
+const state = {
+  balance:10000,
+  played:0,
+  gems:0,
+  daily:false,
+  history:[],
+  game:'coin',
+  mines:[],
+  revealed:[],
+  mineOver:true,
+  crashTimer:null,
+  crashRunning:false,
+  crashValue:1,
+  crashEnd:0,
+  crashStart:0,
+  diceBest:0
+};
+
+const fmt = n => Math.floor(n).toLocaleString('en-US');
+function updateStats(){
+  $('balance').textContent=fmt(state.balance);
+  $('sideBalance').textContent=fmt(state.balance);
+  $('played').textContent=state.played;
+  $('gems').textContent=state.gems;
+  $('bonusStatus').textContent=state.daily?'Claimed':'Ready';
+}
+function setResult(text){$('result').textContent=text}
+function addHistory(game,result,points){
+  state.history.unshift({game,result,points});
+  state.history=state.history.slice(0,8);
+  $('historyRows').innerHTML=state.history.map(x=>`
+    <tr><td>${x.game}</td><td>${x.result}</td>
+    <td style="color:${x.points>=0?'var(--green)':'var(--red)'}">${x.points>=0?'+':''}${fmt(x.points)}</td></tr>
+  `).join('');
+  if(!state.history.length)$('historyRows').innerHTML='<tr><td colspan="3" class="empty">Your game history will show here</td></tr>';
+}
+function finishGame(game,result,points){
+  state.played++;
+  addHistory(game,result,points);
+  updateStats();
+}
+function changePoints(n){
+  state.balance=Math.max(0,state.balance+n);
+  updateStats();
+}
+function openGame(game){
+  stopCrash();
+  state.game=game;
+  document.querySelectorAll('.navbtn').forEach(b=>b.classList.toggle('active',b.dataset.page==='games'));
+  $('playPanel').classList.remove('hidden');
+  $('leaderboard').classList.add('hidden');
+  $('gameCards').classList.remove('hidden');
+  $('sidePanel').classList.remove('hidden');
+  $('hero').classList.remove('hidden');
+  $('gamesHeading').classList.remove('hidden');
+  renderGame();
+  $('playPanel').scrollIntoView({behavior:'smooth',block:'start'});
+}
+function resetGame(){stopCrash();renderGame();setResult('Game reset. Have fun!')}
+function renderGame(){
+  const titles={
+    coin:'🪙 Coin Flip',
+    mines:'💎 Mines',
+    dice:'🎲 Dice Roll',
+    crash:'🚀 Crash Runner'
+  };
+  $('gameTitle').textContent=titles[state.game];
+  if(state.game==='coin')renderCoin();
+  if(state.game==='mines')renderMines();
+  if(state.game==='dice')renderDice();
+  if(state.game==='crash')renderCrash();
+}
+function renderCoin(){
+  $('gameArea').innerHTML=`
+    <p class="game-desc">Pick a side, then flip the coin. This is a free random game with no wagers.</p>
+    <div class="coin" id="coinVisual">✦</div>
+    <div style="display:flex;justify-content:center;gap:10px;flex-wrap:wrap">
+      <button class="btn btn-gold" onclick="flipCoin('Heads')">Heads</button>
+      <button class="btn btn-dark" onclick="flipCoin('Tails')">Tails</button>
+    </div>`;
+  setResult('Ready to flip');
+}
+function flipCoin(choice){
+  const outcome=Math.random()<.5?'Heads':'Tails';
+  $('coinVisual').textContent=outcome==='Heads'?'H':'T';
+  $('coinVisual').style.transform='rotateY(360deg)';
+  const win=choice===outcome;
+  const points=win?100:0;
+  if(win)changePoints(points);
+  finishGame('Coin Flip',win?'Correct pick':'Try again',points);
+  setResult(`You picked ${choice}. It landed on ${outcome}. ${win?'You earned 100 practice points!':'No points this round.'}`);
+}
+function renderMines(){
+  state.mines=Array.from({length:25},(_,i)=>i);
+  for(let i=state.mines.length-1;i>0;i--){
+    const j=Math.floor(Math.random()*(i+1));
+    [state.mines[i],state.mines[j]]=[state.mines[j],state.mines[i]];
+  }
+  state.mines=state.mines.slice(0,5);
+  state.revealed=[];
+  state.mineOver=false;
+  $('gameArea').innerHTML=`
+    <p class="game-desc">Find gems hidden in the 5 × 5 grid. There are five mines. Find at least one gem to earn practice points.</p>
+    <div class="mine-grid" id="mineGrid"></div>
+    <div style="text-align:center"><button class="btn btn-dark" onclick="cashMines()">Finish round</button></div>`;
+  drawMines();
+  setResult('Find a gem to earn 50 practice points. You can finish the round anytime.');
+}
+function drawMines(){
+  const grid=$('mineGrid');if(!grid)return;
+  grid.innerHTML='';
+  for(let i=0;i<25;i++){
+    const b=document.createElement('button');
+    b.className='mine-cell';
+    b.textContent=state.revealed.includes(i)?(state.mines.includes(i)?'✹':'◆'):'?';
+    if(state.revealed.includes(i)){
+      b.classList.add(state.mines.includes(i)?'bomb':'safe');
+      b.disabled=true;
+    }
+    if(state.mineOver)b.disabled=true;
+    b.onclick=()=>revealMine(i);
+    grid.appendChild(b);
+  }
+}
+function revealMine(i){
+  if(state.mineOver||state.revealed.includes(i))return;
+  state.revealed.push(i);
+  if(state.mines.includes(i)){
+    state.mineOver=true;
+    drawMines();
+    finishGame('Mines','Mine found',0);
+    setResult('You found a mine. No points this round. Start a new round to play again.');
+    return;
+  }
+  state.gems++;
+  changePoints(50);
+  drawMines();
+  setResult('Gem found! +50 practice points. Find more gems or finish the round.');
+  updateStats();
+}
+function cashMines(){
+  if(state.mineOver)return;
+  state.mineOver=true;
+  drawMines();
+  finishGame('Mines','Round finished',0);
+  setResult('Round finished. Your collected practice points are yours to keep.');
+}
+function renderDice(){
+  $('gameArea').innerHTML=`
+    <p class="game-desc">Roll a six-sided die. Every roll is free. Beat your personal best and earn points for a high roll.</p>
+    <div class="big-result" id="diceVisual">⚄</div>
+    <div style="text-align:center"><button class="btn btn-gold" onclick="rollDice()">ROLL DICE</button></div>
+    <p class="muted" style="text-align:center">Personal best: <span class="gold" id="diceBest">${state.diceBest}</span></p>`;
+  setResult('Roll the dice to play');
+}
+function rollDice(){
+  const n=1+Math.floor(Math.random()*6);
+  $('diceVisual').textContent=['⚀','⚁','⚂','⚃','⚄','⚅'][n-1];
+  const points=n===6?150:n>=4?50:0;
+  if(n>state.diceBest)state.diceBest=n;
+  if(points)changePoints(points);
+  $('diceBest').textContent=state.diceBest;
+  finishGame('Dice Roll',`Rolled ${n}`,points);
+  setResult(`You rolled ${n}. ${points?`You earned ${points} practice points!`:'Roll a 4, 5 or 6 to earn points.'}`);
+}
+function renderCrash(){
+  $('gameArea').innerHTML=`
+    <p class="game-desc">A timing challenge. Watch the multiplier climb and press Stop before the timer ends. The outcome is a fixed practice challenge, not a wager.</p>
+    <div class="big-result" id="crashVisual">1.00×</div>
+    <div style="display:flex;justify-content:center;gap:10px;flex-wrap:wrap">
+      <button class="btn btn-gold" id="crashStart" onclick="startCrash()">START RUN</button>
+      <button class="btn btn-dark" id="crashStop" onclick="stopRun()" disabled>STOP</button>
+    </div>
+    <p class="muted" style="text-align:center">Earn points by stopping at 1.5× or higher before the run ends.</p>`;
+  setResult('Ready when you are');
+}
+function startCrash(){
+  stopCrash();
+  state.crashRunning=true;
+  state.crashValue=1;
+  state.crashStart=Date.now();
+  state.crashEnd=state.crashStart+5000;
+  $('crashStart').disabled=true;
+  $('crashStop').disabled=false;
+  setResult('Run started. Watch the multiplier!');
+  state.crashTimer=setInterval(()=>{
+    if(!state.crashRunning)return;
+    const elapsed=(Date.now()-state.crashStart)/1000;
+    state.crashValue=1+elapsed*.32;
+    const el=$('crashVisual');
+    if(el)el.textContent=state.crashValue.toFixed(2)+'×';
+    if(Date.now()>=state.crashEnd){
+      state.crashRunning=false;
+      clearInterval(state.crashTimer);
+      state.crashTimer=null;
+      $('crashStart').disabled=false;
+      $('crashStop').disabled=true;
+      finishGame('Crash Runner','Time ran out',0);
+      setResult('Time ran out. Try again and see if you can beat your score.');
+    }
+  },60);
+}
+function stopRun(){
+  if(!state.crashRunning)return;
+  state.crashRunning=false;
+  clearInterval(state.crashTimer);
+  state.crashTimer=null;
+  const points=state.crashValue>=1.5?Math.round(state.crashValue*50):0;
+  if(points)changePoints(points);
+  $('crashStart').disabled=false;
+  $('crashStop').disabled=true;
+  finishGame('Crash Runner',state.crashValue.toFixed(2)+'×',points);
+  setResult(points?`Nice timing! +${points} practice points.`:'Stopped too early. Reach 1.5× to earn practice points.');
+}
+function stopCrash(){
+  if(state.crashTimer)clearInterval(state.crashTimer);
+  state.crashTimer=null;
+  state.crashRunning=false;
+}
+function dailyReward(){
+  if(state.daily){toast('You already claimed today’s bonus');return}
+  state.daily=true;
+  changePoints(500);
+  addHistory('Daily Bonus','Claimed',500);
+  setResult('Daily bonus claimed! +500 practice points.');
+  updateStats();
+  toast('+500 practice points added');
+}
+function clearHistory(){
+  state.history=[];
+  $('historyRows').innerHTML='<tr><td colspan="3" class="empty">Your game history will show here</td></tr>';
+}
+function toast(message){
+  const t=document.createElement('div');
+  t.className='toast';t.textContent=message;
+  document.body.appendChild(t);
+  setTimeout(()=>t.remove(),2200);
+}
+document.querySelectorAll('.navbtn').forEach(button=>{
+  button.addEventListener('click',()=>{
+    document.querySelectorAll('.navbtn').forEach(b=>b.classList.toggle('active',b===button));
+    const page=button.dataset.page;
+    const isBoard=page==='leaderboard';
+    $('leaderboard').classList.toggle('hidden',!isBoard);
+    $('playPanel').classList.toggle('hidden',isBoard);
+    $('gameCards').classList.toggle('hidden',page==='leaderboard'||page==='arcade');
+    $('sidePanel').classList.toggle('hidden',isBoard);
+    $('hero').classList.toggle('hidden',page==='games'||isBoard);
+    $('gamesHeading').classList.toggle('hidden',page==='games'||isBoard);
+    if(page==='games'){
+      $('gameCards').classList.remove('hidden');
+      $('gamesHeading').classList.remove('hidden');
+      $('playPanel').scrollIntoView({behavior:'smooth'});
+    }
+    if(page==='leaderboard')$('leaderboard').scrollIntoView({behavior:'smooth'});
+    if(page==='arcade')window.scrollTo({top:0,behavior:'smooth'});
+  });
+});
+updateStats();
+renderGame();
+</script>
+</body>
+</html>
