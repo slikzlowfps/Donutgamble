@@ -275,5 +275,69 @@ function submitRequest() {
 
   console.log("Supabase client initialized");
 </script
-</body>
+
+<div id="account-panel" style="max-width:420px;margin:30px auto;padding:24px;background:#201b0b;color:#fff;border:1px solid #d4a72c;border-radius:16px;font-family:Arial,sans-serif">
+  <h2 style="color:#f5c542;text-align:center">DonutElite Account</h2>
+  <input id="account-email" type="email" placeholder="Email address" autocomplete="email" style="box-sizing:border-box;width:100%;padding:12px;margin:8px 0;border-radius:8px">
+  <input id="account-password" type="password" placeholder="Password" autocomplete="current-password" style="box-sizing:border-box;width:100%;padding:12px;margin:8px 0;border-radius:8px">
+  <button id="account-signup" style="width:100%;padding:12px;margin-top:8px;background:#f5c542;border:0;border-radius:8px;font-weight:bold">Create account</button>
+  <button id="account-login" style="width:100%;padding:12px;margin-top:8px;background:#39301a;color:white;border:1px solid #d4a72c;border-radius:8px">Log in</button>
+  <button id="account-logout" hidden style="width:100%;padding:12px;margin-top:8px">Log out</button>
+  <p id="account-message" role="status" style="text-align:center"></p>
+</div>
+
+<script>
+(() => {
+  const email = document.getElementById("account-email");
+  const password = document.getElementById("account-password");
+  const message = document.getElementById("account-message");
+  const signup = document.getElementById("account-signup");
+  const login = document.getElementById("account-login");
+  const logout = document.getElementById("account-logout");
+
+  function showMessage(text) {
+    message.textContent = text;
+  }
+
+  if (!window.supabase || typeof supabaseClient === "undefined") {
+    showMessage("Account connection unavailable. Please refresh and try again.");
+    return;
+  }
+
+  signup.addEventListener("click", async () => {
+    if (!email.value.trim() || !password.value) {
+      showMessage("Enter your email and password.");
+      return;
+    }
+    const { error } = await supabaseClient.auth.signUp({
+      email: email.value.trim(),
+      password: password.value
+    });
+    showMessage(error ? error.message : "Sign-up submitted! Check your email if confirmation is required.");
+  });
+
+  login.addEventListener("click", async () => {
+    const { data, error } = await supabaseClient.auth.signInWithPassword({
+      email: email.value.trim(),
+      password: password.value
+    });
+    if (error) {
+      showMessage(error.message);
+      return;
+    }
+    showMessage("You're logged in!");
+    logout.hidden = false;
+    signup.hidden = true;
+    login.hidden = true;
+  });
+
+  logout.addEventListener("click", async () => {
+    const { error } = await supabaseClient.auth.signOut();
+    showMessage(error ? error.message : "You've logged out.");
+    logout.hidden = true;
+    signup.hidden = false;
+    login.hidden = false;
+  });
+})();
+</script></body>
 </html>
