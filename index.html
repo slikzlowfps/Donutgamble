@@ -339,5 +339,16 @@ function submitRequest() {
     login.hidden = false;
   });
 })();
+INSERT INTO public.profiles (id, username)
+SELECT
+  u.id,
+  'player_' || LEFT(u.id::text, 8)
+FROM auth.users AS u
+WHERE NOT EXISTS (
+  SELECT 1
+  FROM public.profiles AS p
+  WHERE p.id = u.id
+)
+ON CONFLICT (id) DO NOTHING;
 </script></body>
 </html>
