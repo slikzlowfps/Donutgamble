@@ -356,5 +356,78 @@ showMessage("You're logged in!");
 
 })();
 
+</script>
+<!-- DonutElite My Account Dashboard -->
+<section id="my-account" style="max-width:420px;margin:24px auto;padding:20px;background:#201b0b;color:white;border:1px solid #d4a72c;border-radius:14px;font-family:Arial,sans-serif">
+  <button id="account-toggle" style="width:100%;padding:12px;background:#f5c542;color:#17130a;border:0;border-radius:8px;font-weight:bold">
+    My Account
+  </button>
+
+  <div id="account-dashboard" hidden style="padding-top:16px">
+    <h2 style="color:#f5c542">Your Profile</h2>
+    <p id="profile-status">Checking your login...</p>
+    <p id="profile-username"></p>
+    <p id="profile-created"></p>
+    <button id="profile-refresh" style="padding:10px;background:#39301a;color:white;border:1px solid #d4a72c;border-radius:8px">
+      Refresh Profile
+    </button>
+  </div>
+</section>
+
+<script>
+(() => {
+  const toggle = document.getElementById("account-toggle");
+  const dashboard = document.getElementById("account-dashboard");
+  const status = document.getElementById("profile-status");
+  const username = document.getElementById("profile-username");
+  const created = document.getElementById("profile-created");
+  const refresh = document.getElementById("profile-refresh");
+
+  toggle.addEventListener("click", async () => {
+    dashboard.hidden = !dashboard.hidden;
+    if (!dashboard.hidden) await loadProfile();
+  });
+
+  refresh.addEventListener("click", loadProfile);
+
+  async function loadProfile() {
+    status.textContent = "Loading profile...";
+    username.textContent = "";
+    created.textContent = "";
+
+    try {
+      const { data: { user }, error: authError } =
+        await supabaseClient.auth.getUser();
+
+      if (authError || !user) {
+        status.textContent = "Please log in to view your profile.";
+        return;
+      }
+
+      const { data, error } = await supabaseClient
+        .from("profiles")
+        .select("username, created_at")
+        .eq("id", user.id)
+        .maybeSingle();
+
+      if (error) throw error;
+
+      if (!data) {
+        status.textContent = "No profile found for your account.";
+        return;
+      }
+
+      status.textContent = "You're logged in!";
+      username.textContent = "Username: " + data.username;
+      created.textContent = "Joined: " +
+        (data.created_at
+          ? new Date(data.created_at).toLocaleDateString()
+          : "Date unavailable");
+    } catch (error) {
+      status.textContent = "Couldn't load profile. Please try again.";
+      console.error("Profile loading failed:", error);
+    }
+  }
+})();
 </script></body>
 </html>
