@@ -423,8 +423,8 @@ showMessage("You're logged in!");
         (data.created_at
           ? new Date(data.created_at).toLocaleDateString()
           : "Date unavailable");
-    } catch (error) {
-      status.textContent = "Couldn't load profile. Please try again.";
+    } catch (error) {status.textContent = "Profile error: " + error.message;
+      
       console.error("Profile loading failed:", error);
     }
   }
