@@ -337,7 +337,23 @@ function submitRequest() {
     logout.hidden = true;
     signup.hidden = false;
     login.hidden = false;
-  });
+  });supabaseClient.auth.getSession().then(({ data, error }) => {
+if (error) {
+console.error("Session check failed:", error);
+return;
+}
+
+const loggedIn = !!data.session;
+
+logout.hidden = !loggedIn;
+signup.hidden = loggedIn;
+login.hidden = loggedIn;
+
+if (loggedIn) {
+showMessage("You're logged in!");
+}
+});
+
 })();
 
 </script></body>
